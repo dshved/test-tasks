@@ -38,6 +38,33 @@ class TicketList extends Component {
     return <div>Загрузка....</div>;
   }
 
+  renderDate(date) {
+    function getWeekDay(date) {
+      date = date || new Date();
+      var days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      var day = date.getDay();
+      return days[day];
+    }
+
+    function getMonth(date) {
+      date = date || new Date();
+      var months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+      var month = date.getMonth();
+      return months[month];
+    }
+    let newDate = new Date(date);
+    let day = newDate.getDate();
+    let year = newDate.getFullYear();
+    let week = getWeekDay(newDate);
+    let month = getMonth(newDate);
+    return `${day} ${month} ${year}, ${week}`;
+  }
+
+
+  prettyPrice(price) {
+    return price.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+  }
+
   renderStops(count) {
     count = Math.abs(count);
     count %= 100;
@@ -79,18 +106,18 @@ class TicketList extends Component {
               <img src={`http://pics.avs.io/124/33/${ticket.carrier}.png`} alt="Airline-logo"/></div>
               <button className="ticket__button">
                 <span className="ticket__button-text">Купить </span>
-                <span className="ticket__button-text">за {ticket.price}р</span></button>
+                <span className="ticket__button-text">за {this.prettyPrice(ticket.price)} Р</span></button>
             </div>
             <div className="ticket__content fly-segment">
               <div className="fly-segment__origin">
                 <div className="fly-segment__time">{ticket.departure_time}</div>
                 <div className="fly-segment__city">{ticket.origin}, {ticket.origin_name}</div>
-                <div className="fly-segment__date">{ticket.departure_date}</div>
+                <div className="fly-segment__date">{this.renderDate(ticket.departure_date)}</div>
               </div>
               <div className="fly-segment__destination">
                 <div className="fly-segment__time">{ticket.arrival_time}</div>
                 <div className="fly-segment__city">{ticket.destination_name}, {ticket.destination}</div>
-                <div className="fly-segment__date">{ticket.arrival_date}</div>
+                <div className="fly-segment__date">{this.renderDate(ticket.arrival_date)}</div>
               </div>
               <div className="fly-segment__stops">{this.renderStops(ticket.stops)}</div>
             </div>
